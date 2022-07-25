@@ -27,7 +27,6 @@ namespace Library.Cli
             services.AddSingleton<ITenseConverter, TenseConverter>();
             services.AddSingleton<INamespaceProvider, NamespaceProvider>();
             services.AddSingleton<IFileProvider, FileProvider>();
-            services.AddSingleton<IFileFactory,FileFactory>();
             services.AddSingleton<IFileGenerationStrategy,FileGenerationStrategy>();
             services.AddSingleton<ILibraryGenerationStrategyFactory, LibraryGenerationStrategyFactory>();
             services.AddSingleton<ILibraryGenerationStrategy, LibraryGenerationStrategy>();

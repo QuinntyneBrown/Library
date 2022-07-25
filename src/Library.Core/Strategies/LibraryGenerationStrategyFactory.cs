@@ -7,11 +7,11 @@ namespace Library.Core.Strategies
     {
         private readonly IList<ILibraryGenerationStrategy> _strategies;
         
-        public LibraryGenerationStrategyFactory(ILogger logger, IFileSystem fileSystem, ICommandService commandService)
+        public LibraryGenerationStrategyFactory(ILogger logger, IFileSystem fileSystem, ICommandService commandService, IFileGenerationStrategy fileGenerationStrategy)
         {
             _strategies = new List<ILibraryGenerationStrategy>()
             {
-                new LibraryGenerationStrategy(commandService,logger,fileSystem)
+                new LibraryGenerationStrategy(commandService,logger,fileSystem, fileGenerationStrategy)
             };
         }
 

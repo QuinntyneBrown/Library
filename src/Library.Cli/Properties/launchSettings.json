@@ -2,7 +2,7 @@
   "profiles": {
     "Library.Cli": {
       "commandName": "Project",
-      "commandLineArgs": ""
+      "commandLineArgs": "--name QuinntyneBrown.Bugs -d C:\\projects"
     }
   }
 }

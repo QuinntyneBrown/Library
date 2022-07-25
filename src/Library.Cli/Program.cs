@@ -1,8 +1,6 @@
 using CommandLine;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
 
 namespace Library.Cli
 {
