@@ -15,6 +15,11 @@ namespace Library.Core.Factories
         {
             var project = new ProjectModel(name, parentDirectory, DotNetProjectType.XUnit, 1);
 
+            project.Packages.Add(new PackageModel()
+            {
+                Name = "Moq",
+            });
+
             return project;
         }
     }

@@ -43,6 +43,11 @@ namespace Library.Core.Strategies
             {
                 _commandService.Start($"dotnet new {project.ProjectType} -n {project.Name}", project.ParentDirectory);
 
+                foreach(var package in project.Packages)
+                {
+                    _commandService.Start($"dotnet add package {package.Name}");
+                }
+
                 _commandService.Start($"dotnet sln add {project.Directory}{Path.DirectorySeparatorChar}{project.Name}.csproj", model.SolutionDirectory);
             }
 

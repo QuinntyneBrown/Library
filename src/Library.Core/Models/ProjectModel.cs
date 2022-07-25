@@ -21,6 +21,7 @@
         public List<FileModel> Files { get; private set; } = new List<FileModel>();
         public string ParentDirectory { get; set; }
         public string Directory { get; set; }
+        public List<PackageModel> Packages { get; private set; } = new();
         public string ProjectType => DotNetProjectType switch
         {
             DotNetProjectType.XUnit => "xunit",
