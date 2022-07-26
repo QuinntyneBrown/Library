@@ -1,4 +1,6 @@
-﻿namespace Library.Core.Models
+﻿using static System.IO.Path;
+
+namespace Library.Core.Models
 {
     public class ProjectModel
     {
@@ -10,18 +12,20 @@
 
             Name = name;
 
-            Directory = $"{parentDirectory}{Path.DirectorySeparatorChar}{name}";
+            Directory = $"{parentDirectory}{DirectorySeparatorChar}{name}";
 
             Order = order;
         }
 
         public string Name { get; set; } = string.Empty;
+        public string Path => $"{Directory}{DirectorySeparatorChar}{Name}.csproj";
         public DotNetProjectType DotNetProjectType { get; set; } = DotNetProjectType.ClassLib;
         public int Order { get; init; } = 0;
         public List<FileModel> Files { get; private set; } = new List<FileModel>();
         public string ParentDirectory { get; set; }
         public string Directory { get; set; }
         public List<PackageModel> Packages { get; private set; } = new();
+        public bool IsNugetPackage { get; init; }
         public string ProjectType => DotNetProjectType switch
         {
             DotNetProjectType.XUnit => "xunit",

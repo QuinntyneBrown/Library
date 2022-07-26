@@ -2,7 +2,7 @@
   "profiles": {
     "Library.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "--name QuinntyneBrown.Bugs -d C:\\projects"
+      "commandLineArgs": "nuget-add-packages -d C:\\projects"
     }
   }
 }

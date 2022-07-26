@@ -10,13 +10,15 @@ namespace Library.Core.Strategies
         private readonly IFileSystem _fileSystem;
         private readonly ILogger _logger;
         private readonly IFileGenerationStrategy _fileGenerationStrategy;
+        private readonly ICsProjFileManager _csProjFileManager;
 
-        public LibraryGenerationStrategy(ICommandService commandService, ILogger logger, IFileSystem fileSystem, IFileGenerationStrategy fileGenerationStrategy)
+        public LibraryGenerationStrategy(ICommandService commandService, ILogger logger, IFileSystem fileSystem, IFileGenerationStrategy fileGenerationStrategy, ICsProjFileManager csProjFileManager)
         {
             _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _fileGenerationStrategy = fileGenerationStrategy ?? throw new ArgumentNullException(nameof(fileGenerationStrategy));
+            _csProjFileManager = csProjFileManager ?? throw new ArgumentNullException(nameof(csProjFileManager));
         }
 
         public int Order => 0;
@@ -43,9 +45,14 @@ namespace Library.Core.Strategies
             {
                 _commandService.Start($"dotnet new {project.ProjectType} -n {project.Name}", project.ParentDirectory);
 
+                if(project.IsNugetPackage)
+                {
+                    _csProjFileManager.AddNugetConfiguration(project);
+                }
+
                 foreach(var package in project.Packages)
                 {
-                    _commandService.Start($"dotnet add package {package.Name}");
+                    _commandService.Start($"dotnet add package {package.Name}", project.Directory);
                 }
 
                 _commandService.Start($"dotnet sln add {project.Directory}{Path.DirectorySeparatorChar}{project.Name}.csproj", model.SolutionDirectory);

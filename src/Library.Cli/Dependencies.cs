@@ -1,9 +1,9 @@
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using MediatR;
 using Library.Core;
 using Library.Core.Strategies;
+using MediatR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Library.Cli
 {
@@ -30,6 +30,7 @@ namespace Library.Cli
             services.AddSingleton<IFileGenerationStrategy,FileGenerationStrategy>();
             services.AddSingleton<ILibraryGenerationStrategyFactory, LibraryGenerationStrategyFactory>();
             services.AddSingleton<ILibraryGenerationStrategy, LibraryGenerationStrategy>();
+            services.AddSingleton<ICsProjFileManager, CsProjFileManager>();
             services.AddSingleton(CreateLoggerFactory().CreateLogger("cli"));
             
         }

@@ -8,7 +8,7 @@ namespace Library.Core.Factories
         {
             var model = new LibraryModel(name, directory);
 
-            var implementation = ProjectModelFactory.Create(name, $"{directory}{Path.DirectorySeparatorChar}{name}");
+            var implementation = ProjectModelFactory.CreateLibrary(name, $"{directory}{Path.DirectorySeparatorChar}{name}");
 
             var unitTests = ProjectModelFactory.CreateXUnit($"{name}.UnitTests", $"{directory}{Path.DirectorySeparatorChar}{name}");
 

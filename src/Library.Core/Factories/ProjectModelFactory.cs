@@ -4,9 +4,12 @@ namespace Library.Core.Factories
 {
     public static class ProjectModelFactory
     {
-        public static ProjectModel Create(string name, string parentDirectory)
+        public static ProjectModel CreateLibrary(string name, string parentDirectory)
         {
-            var project = new ProjectModel(name, parentDirectory);
+            var project = new ProjectModel(name, parentDirectory)
+            {
+                IsNugetPackage = true
+            };
 
             return project;
         }
