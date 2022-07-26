@@ -21,7 +21,7 @@ namespace Library.Core.Models
         public string Path => $"{Directory}{DirectorySeparatorChar}{Name}.csproj";
         public DotNetProjectType DotNetProjectType { get; set; } = DotNetProjectType.ClassLib;
         public int Order { get; init; } = 0;
-        public List<FileModel> Files { get; private set; } = new List<FileModel>();
+        public List<TemplateFileModel> Files { get; private set; } = new List<TemplateFileModel>();
         public string ParentDirectory { get; set; }
         public string Directory { get; set; }
         public List<PackageModel> Packages { get; private set; } = new();

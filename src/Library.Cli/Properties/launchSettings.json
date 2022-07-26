@@ -2,7 +2,7 @@
   "profiles": {
     "Library.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "nuget-add-packages -d C:\\projects"
+      "commandLineArgs": "--name Seq -d C:\\projects"
     }
   }
 }

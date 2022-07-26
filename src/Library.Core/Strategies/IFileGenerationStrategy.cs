@@ -2,6 +2,10 @@ namespace Library.Core
 {
     public interface IFileGenerationStrategy
     {
-        void Create(FileModel model);
+        void Create(dynamic model);
+
+        int Order { get; }
+        bool CanHandle(dynamic model);
+
     }
 }

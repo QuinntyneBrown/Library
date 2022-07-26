@@ -27,11 +27,11 @@ namespace Library.Cli
             services.AddSingleton<ITenseConverter, TenseConverter>();
             services.AddSingleton<INamespaceProvider, NamespaceProvider>();
             services.AddSingleton<IFileProvider, FileProvider>();
-            services.AddSingleton<IFileGenerationStrategy,FileGenerationStrategy>();
             services.AddSingleton<ILibraryGenerationStrategyFactory, LibraryGenerationStrategyFactory>();
             services.AddSingleton<ILibraryGenerationStrategy, LibraryGenerationStrategy>();
             services.AddSingleton<ICsProjFileManager, CsProjFileManager>();
-            services.AddSingleton(CreateLoggerFactory().CreateLogger("cli"));
+            services.AddSingleton<IFileGenerationStrategyFactory, FileGenerationStrategyFactory>();
+            services.AddSingleton(CreateLoggerFactory().CreateLogger("library-cli"));
             
         }
 

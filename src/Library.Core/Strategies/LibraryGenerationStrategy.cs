@@ -9,15 +9,15 @@ namespace Library.Core.Strategies
         private readonly ICommandService _commandService;
         private readonly IFileSystem _fileSystem;
         private readonly ILogger _logger;
-        private readonly IFileGenerationStrategy _fileGenerationStrategy;
+        private readonly IFileGenerationStrategyFactory _fileGenerationStrategyFactory;
         private readonly ICsProjFileManager _csProjFileManager;
 
-        public LibraryGenerationStrategy(ICommandService commandService, ILogger logger, IFileSystem fileSystem, IFileGenerationStrategy fileGenerationStrategy, ICsProjFileManager csProjFileManager)
+        public LibraryGenerationStrategy(ICommandService commandService, ILogger logger, IFileSystem fileSystem, IFileGenerationStrategyFactory fileGenerationStrategyFactory, ICsProjFileManager csProjFileManager)
         {
             _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            _fileGenerationStrategy = fileGenerationStrategy ?? throw new ArgumentNullException(nameof(fileGenerationStrategy));
+            _fileGenerationStrategyFactory = fileGenerationStrategyFactory ?? throw new ArgumentNullException(nameof(fileGenerationStrategyFactory));
             _csProjFileManager = csProjFileManager ?? throw new ArgumentNullException(nameof(csProjFileManager));
         }
 
@@ -37,7 +37,7 @@ namespace Library.Core.Strategies
                 .With("name",(Token)options.Name)
                 .Build();
 
-            _fileGenerationStrategy.Create(FileModelFactory.Create(Constants.Templates.ReadMe, "README", model.SolutionDirectory, "md", tokens));
+            _fileGenerationStrategyFactory.CreateFor(FileModelFactory.CreateTemplate(Constants.Templates.ReadMe, "README", model.SolutionDirectory, "md", tokens));
 
             _commandService.Start("dotnet new sln", model.SolutionDirectory);
 

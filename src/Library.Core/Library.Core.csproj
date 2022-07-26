@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Templates\GlobalJson.txt" />
     <None Remove="Templates\ReadMe.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Templates\GlobalJson.txt" />
     <EmbeddedResource Include="Templates\ReadMe.txt" />
   </ItemGroup>
 

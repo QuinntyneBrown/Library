@@ -2,14 +2,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Library.Core
 {
-    public class FileGenerationStrategy: IFileGenerationStrategy
+    public class TemplateFileGenerationStrategy: IFileGenerationStrategy
     {
         private readonly IFileSystem _fileSystem;
         private readonly ITemplateLocator _templateLocator;
         private readonly ITemplateProcessor _templateProcessor;
         private readonly ILogger _logger;
 
-        public FileGenerationStrategy(
+        public TemplateFileGenerationStrategy(
             IFileSystem fileSystem,
             ITemplateLocator templateLocator,
             ITemplateProcessor templateProcessor,
@@ -22,7 +22,12 @@ namespace Library.Core
             _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));                    
         }
 
-        public void Create(FileModel model)
+        public int Order => 0;
+
+        public bool CanHandle(dynamic model) => model is TemplateFileModel;
+
+        public void Create(dynamic model) => Create(model);
+        public void Create(TemplateFileModel model)
         {
             _logger.LogInformation($"Creating {model.Name} file at {model.Path}");
 

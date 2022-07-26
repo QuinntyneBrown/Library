@@ -5,6 +5,7 @@
         public static class Templates
         {
             public const string ReadMe = nameof(ReadMe);
+            public const string GlobalJson = nameof(GlobalJson);
         }
     }
 }

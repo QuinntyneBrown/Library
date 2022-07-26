@@ -13,6 +13,6 @@
         public string SolutionDirectory => $"{Directory}{Path.DirectorySeparatorChar}{Name}";
         public List<ProjectModel> Projects { get; set; } = new();
         public List<DependsOnModel> DependOns { get; set; } = new();
-        public List<FileModel> Files { get; set; } = new ();
+        public List<TemplateFileModel> Files { get; set; } = new ();
     }
 }
