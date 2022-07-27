@@ -2,12 +2,6 @@
 
 namespace Library.Core.Strategies
 {
-    public interface IFileGenerationStrategyFactory
-    {
-        void CreateFor<T>(T model)
-            where T : FileModel;
-    }
-
     public class FileGenerationStrategyFactory : IFileGenerationStrategyFactory
     {
         private readonly List<IFileGenerationStrategy> _strategies;

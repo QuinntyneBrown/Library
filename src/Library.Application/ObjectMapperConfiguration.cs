@@ -1,4 +1,5 @@
-﻿using Library.Core.Options;
+﻿using Library.Application.Commands;
+using Library.Core.Options;
 using Nelibur.ObjectMapper;
 using System.Runtime.CompilerServices;
 
@@ -9,7 +10,8 @@ namespace Library.Application
         [ModuleInitializer]
         public static void Configure()
         {
-            TinyMapper.Bind<Default.Request, CreateLibraryOptions>();
+            TinyMapper.Bind<Default.Request, CreateSolutionOptions>();
+            TinyMapper.Bind<AddProject.Request, AddProjectOptions>();
         }
     }
 }

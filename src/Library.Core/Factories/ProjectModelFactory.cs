@@ -14,6 +14,14 @@ namespace Library.Core.Factories
             return project;
         }
 
+        public static ProjectModel CreateWebApi(string name, string parentDirectory)
+        {
+            var project = new ProjectModel(name, parentDirectory, DotNetProjectType.WebApi, 0);
+
+            
+            return project;
+        }
+
         public static ProjectModel CreateXUnit(string name, string parentDirectory)
         {
             var project = new ProjectModel(name, parentDirectory, DotNetProjectType.XUnit, 1);

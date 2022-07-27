@@ -1,6 +1,6 @@
 ﻿namespace Library.Core.Generators
 {
-    internal class FileGenerator
+    public class FileGenerator
     {
     }
 }

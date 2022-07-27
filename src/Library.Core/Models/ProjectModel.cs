@@ -29,6 +29,7 @@ namespace Library.Core.Models
         public string ProjectType => DotNetProjectType switch
         {
             DotNetProjectType.XUnit => "xunit",
+            DotNetProjectType.WebApi => "webapi",
             _ => "classlib"
         };
     }

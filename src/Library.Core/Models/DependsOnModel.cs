@@ -2,10 +2,10 @@
 {
     public class DependsOnModel
     {
-        public ProjectModel Client { get; init; }
-        public ProjectModel Supplier { get; init; }
+        public string Client { get; init; }
+        public string Supplier { get; init; }
 
-        public DependsOnModel(ProjectModel client, ProjectModel supplier)
+        public DependsOnModel(string client, string supplier)
         {
             Client = client;
             Supplier = supplier;

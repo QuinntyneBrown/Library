@@ -1,15 +1,13 @@
 using CommandLine;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 
 namespace Library.Application.Commands
 {
-    internal class CreateClass
+    internal class CreateService
     {
-        [Verb("create-class")]
+        [Verb("create-service")]
         internal class Request : IRequest<Unit> {
 
         }
@@ -25,7 +23,7 @@ namespace Library.Application.Commands
 
             public async Task<Unit> Handle(Request request, CancellationToken cancellationToken)
             {
-                _logger.LogInformation($"Handled: {nameof(CreateClass)}");
+                _logger.LogInformation($"Handled: {nameof(CreateService)}");
 
                 return new();
             }

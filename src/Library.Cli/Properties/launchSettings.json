@@ -2,7 +2,7 @@
   "profiles": {
     "Library.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "--name Seq -d C:\\projects"
+      "commandLineArgs": "--name ExpenseManagement -r webapi -d C:\\projects"
     }
   }
 }

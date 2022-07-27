@@ -1,5 +1,5 @@
+using Library.Application;
 using Library.Core;
-using Library.Core.Strategies;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,28 +11,16 @@ namespace Library.Cli
     {
         public static void Configure(IServiceCollection services)
         {
-            services.AddMediatR(typeof(Library.Application.Default));
+            services.AddMediatR(typeof(Default));
 
             var configuration = new ConfigurationBuilder()
                 .AddUserSecrets<Program>(optional:true)
                 .Build();
 
-            services.AddSingleton<IConfiguration>(_ => configuration);
+            var logger = CreateLoggerFactory().CreateLogger("library-cli");
 
-            services.AddSingleton<ICommandService, CommandService>();
-            services.AddSingleton<IFileSystem, FileSystem>();
-            services.AddSingleton<ITemplateLocator, TemplateLocator>();
-            services.AddSingleton<ITemplateProcessor, LiquidTemplateProcessor>();
-            services.AddSingleton<INamingConventionConverter, NamingConventionConverter>();
-            services.AddSingleton<ITenseConverter, TenseConverter>();
-            services.AddSingleton<INamespaceProvider, NamespaceProvider>();
-            services.AddSingleton<IFileProvider, FileProvider>();
-            services.AddSingleton<ILibraryGenerationStrategyFactory, LibraryGenerationStrategyFactory>();
-            services.AddSingleton<ILibraryGenerationStrategy, LibraryGenerationStrategy>();
-            services.AddSingleton<ICsProjFileManager, CsProjFileManager>();
-            services.AddSingleton<IFileGenerationStrategyFactory, FileGenerationStrategyFactory>();
-            services.AddSingleton(CreateLoggerFactory().CreateLogger("library-cli"));
-            
+            services.AddLibraryCodeGenerationServices(configuration, logger);
+
         }
 
         private static ILoggerFactory CreateLoggerFactory()
