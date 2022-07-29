@@ -12,6 +12,7 @@ namespace Library.Application
         {
             TinyMapper.Bind<Default.Request, CreateSolutionOptions>();
             TinyMapper.Bind<AddProject.Request, AddProjectOptions>();
+            TinyMapper.Bind<CreateWebApi.Request, CreateWebApiOptions>();
         }
     }
 }

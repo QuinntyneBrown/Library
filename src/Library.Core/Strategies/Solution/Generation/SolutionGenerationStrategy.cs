@@ -33,6 +33,10 @@ namespace Library.Core.Strategies
 
             _fileSystem.CreateDirectory(model.Directory);
 
+            _fileSystem.CreateDirectory(model.SrcDirectory);
+
+            _fileSystem.CreateDirectory(model.TestDirectory);
+
             _commandService.Start("dotnet new sln", model.Directory);
 
             foreach(var project in model.Projects.OrderBy(x => x.Order))

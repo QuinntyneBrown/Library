@@ -18,7 +18,7 @@
     <UserSecretsId>19a2b795-2315-49b9-bde2-71ea4df48042</UserSecretsId>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>lib</ToolCommandName>
-    <Version>1.0.10</Version>
+    <Version>1.0.11</Version>
     <PackageOutputPath>./nupkg</PackageOutputPath>
   </PropertyGroup>
 </Project>

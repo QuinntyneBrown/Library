@@ -27,7 +27,7 @@ namespace Library.Core
 
         public bool CanHandle(dynamic model) => model is XUnitFileModel;
 
-        public void Create(dynamic model) => Create(model);
+        public void Create(dynamic model, SolutionModel solutionModel = null) => Create(model);
 
         public void Create(XUnitFileModel model)
         {

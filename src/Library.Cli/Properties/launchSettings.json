@@ -2,7 +2,7 @@
   "profiles": {
     "Library.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "--name ExpenseManagement -r webapi -d C:\\projects"
+      "commandLineArgs": "--name Contoso.EventSourcing -d C:\\projects"
     }
   }
 }

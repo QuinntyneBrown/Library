@@ -18,14 +18,14 @@ namespace Library.Core.Models
         }
 
         public string Name { get; set; } = string.Empty;
-        public string Path => $"{Directory}{DirectorySeparatorChar}{Name}.csproj";
+        public string Path => $"{Directory}{DirectorySeparatorChar}{Name}.csproj";        
         public DotNetProjectType DotNetProjectType { get; set; } = DotNetProjectType.ClassLib;
         public int Order { get; init; } = 0;
         public List<TemplateFileModel> Files { get; private set; } = new List<TemplateFileModel>();
         public string ParentDirectory { get; set; }
         public string Directory { get; set; }
-        public List<PackageModel> Packages { get; private set; } = new();
-        public bool IsNugetPackage { get; init; }
+        public List<PackageModel> Packages { get; set; } = new();        
+        public List<string> Metadata { get; set; } = new();
         public string ProjectType => DotNetProjectType switch
         {
             DotNetProjectType.XUnit => "xunit",

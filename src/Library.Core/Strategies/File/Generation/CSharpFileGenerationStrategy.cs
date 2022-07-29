@@ -25,13 +25,50 @@ namespace Library.Core
 
         public int Order => 0;
 
-        public bool CanHandle(dynamic model) => model is CSharpFileModel;
+        public bool CanHandle(dynamic model) 
+            => model is CSharpFileModel 
+            || model is AggregateRootCSharpFileModel;
 
-        public void Create(dynamic model) => Create(model);
+        public void Create(dynamic model, SolutionModel solutionModel = null) => Create(model);
         public void Create(CSharpFileModel model)
         {
             _logger.LogInformation($"Creating {model.Name} file at {model.Path}");
 
+            var content = new List<string>();
+
+            _write(model.Directory, model.Namespace, model.Name, content);
+
+        }
+
+        public void Create(AggregateRootCSharpFileModel model)
+        {
+            _logger.LogInformation($"Creating {model.Name} file at {model.Path}");
+
+            var content = new List<string>();
+
+            content.Add($"public class {((Token)model.AggregateRootModel.Name).PascalCase}");
+
+            content.Add("{");
+
+            foreach (var property in model.AggregateRootModel.Properties)
+            {
+                content.Add(($"public {property.Type} {property.Name}" + " { get; set; }").Indent(1));
+            }
+
+            content.Add("}");
+
+            _write(model.Directory, model.Namespace, model.Name, content);
+
+        }
+
+        private void _write(string directory, string @namespace, string filename, List<string> content)
+        {
+            var classContent = new List<string>()
+            {
+                $"namespace {@namespace};", ""
+            };
+
+            _fileSystem.WriteAllLines($"{directory}{Path.DirectorySeparatorChar}{filename}.cs", classContent.Concat(content).ToArray());
         }
     }
 }

@@ -1,3 +1,4 @@
+using Library.Core.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Library.Core
@@ -26,7 +27,7 @@ namespace Library.Core
 
         public bool CanHandle(dynamic model) => model is TemplateFileModel;
 
-        public void Create(dynamic model) => Create(model);
+        public void Create(dynamic model, SolutionModel solutionModel = null) => Create(model);
         public void Create(TemplateFileModel model)
         {
             _logger.LogInformation($"Creating {model.Name} file at {model.Path}");

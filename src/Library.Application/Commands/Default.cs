@@ -32,7 +32,7 @@ namespace Library.Application
             private readonly ISolutionGenerator _libraryGenerator;
             private readonly Dictionary<string, Func<CreateSolutionOptions, SolutionModel>> _recipeDictionary = new()
             {
-                { "libray", SolutionModelFactory.CreateLibrary },
+                { "library", SolutionModelFactory.CreateLibrary },
                 { "webapi", SolutionModelFactory.CreateWebApi },
                 { "minimal-api", SolutionModelFactory.CreateMinimalApi },
                 { "microservice", SolutionModelFactory.CreateMicroservice },

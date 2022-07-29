@@ -30,7 +30,7 @@ namespace Library.Core.Strategies
 
             _commandService.Start(cmd, model.ParentDirectory);
 
-            if (model.IsNugetPackage)
+            if (model.Metadata.Contains(Constants.Metadata.NugetPackage))
             {
                 _csProjFileManager.AddNugetConfiguration(model);
             }
@@ -38,6 +38,11 @@ namespace Library.Core.Strategies
             foreach (var package in model.Packages)
             {
                 _commandService.Start($"dotnet add package {package.Name}", model.Directory);
+            }
+
+            foreach (var path in Directory.GetFiles(model.Directory, "*.cs", SearchOption.AllDirectories).Where(x => !x.EndsWith("Program.cs")))
+            {
+                _fileSystem.Delete(path);
             }
         }
     }
