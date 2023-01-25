@@ -9,60 +9,59 @@ using Nelibur.ObjectMapper;
 namespace Library.Cli.Commands;
 
 
-public class AddProject
+[Verb("add-project")]
+public class AddProjectRequest : IRequest<Unit> {
+
+    [Value(0, Required = true)]
+    public string Name { get; set; } = string.Empty;
+
+    [Option('t',"project-type")]
+    public string ProjectType { get; set; } = "classlib";
+
+    [Option("depends-on")]
+    public string DependsOns { get; set; } = string.Empty;
+
+    [Option('s',"supplies")]
+    public string Supplies { get; set; } = string.Empty;
+
+    [Option('d',"directory")]
+    public string Directory { get; set; } = Environment.CurrentDirectory;
+}
+
+public class AddProjectRequestHandler : IRequestHandler<AddProjectRequest, Unit>
 {
-    [Verb("add-project")]
-    public class Request : IRequest<Unit> {
+    private readonly ILogger<AddProjectRequestHandler> _logger;
+    private readonly ISolutionUpdateStrategyFactory _projectUpdateStrategyFactory;
 
-        [Value(0, Required = true)]
-        public string Name { get; set; } = string.Empty;
-
-        [Option('t',"project-type")]
-        public string ProjectType { get; set; } = "classlib";
-
-        [Option("depends-on")]
-        public string DependsOns { get; set; } = string.Empty;
-
-        [Option('s',"supplies")]
-        public string Supplies { get; set; } = string.Empty;
-
-        [Option('d',"directory")]
-        public string Directory { get; set; } = Environment.CurrentDirectory;
+    public AddProjectRequestHandler(
+        ILogger<AddProjectRequestHandler> logger, 
+        ISolutionUpdateStrategyFactory projectUpdateStrategyFactory)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _projectUpdateStrategyFactory = projectUpdateStrategyFactory ?? throw new ArgumentNullException(nameof(projectUpdateStrategyFactory));
     }
 
-    public class Handler : IRequestHandler<Request, Unit>
+    public async Task<Unit> Handle(AddProjectRequest request, CancellationToken cancellationToken)
     {
-        private readonly ILogger _logger;
-        private readonly ISolutionUpdateStrategyFactory _projectUpdateStrategyFactory;
+        _logger.LogInformation($"Handled: {nameof(AddProjectRequestHandler)}");
 
-        public Handler(ILogger logger, ISolutionUpdateStrategyFactory projectUpdateStrategyFactory)
+        var projectReferenceModel = TinyMapper.Map<ProjectReferenceModel>(request);
+
+        var previousSolutionModel = SolutionModelFactory.ReHydrate(projectReferenceModel.ReferenceDirectory);
+
+        var nextSolutionModel = SolutionModelFactory.ReHydrate(projectReferenceModel.ReferenceDirectory);
+
+        var projectModel = request.ProjectType switch
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _projectUpdateStrategyFactory = projectUpdateStrategyFactory ?? throw new ArgumentNullException(nameof(projectUpdateStrategyFactory));
-        }
+            "webapi" => ProjectModelFactory.CreateWebApi(projectReferenceModel.Name, previousSolutionModel.Directory),
+            "xunit" => ProjectModelFactory.CreateXUnit(projectReferenceModel.Name, previousSolutionModel.Directory),
+            _ => ProjectModelFactory.CreateLibrary(projectReferenceModel.Name, previousSolutionModel.Directory)
+        };
 
-        public async Task<Unit> Handle(Request request, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation($"Handled: {nameof(AddProject)}");
+        nextSolutionModel.AddProject(projectModel,projectReferenceModel.DependsOns.Split(',').ToList(),projectReferenceModel.Supplies.Split(',').ToList());
 
-            var options = TinyMapper.Map<ProjectReferenceModel>(request);
-
-            var previousSolutionModel = SolutionModelFactory.ReHydrate(options.ReferenceDirectory);
-
-            var nextSolutionModel = SolutionModelFactory.ReHydrate(options.ReferenceDirectory);
-
-            var projectModel = request.ProjectType switch
-            {
-                "webapi" => ProjectModelFactory.CreateWebApi(options.Name, previousSolutionModel.Directory),
-                "xunit" => ProjectModelFactory.CreateXUnit(options.Name, previousSolutionModel.Directory),
-                _ => ProjectModelFactory.CreateLibrary(options.Name, previousSolutionModel.Directory)
-            };
-
-            nextSolutionModel.AddProject(projectModel,options.DependsOns.Split(',').ToList(),options.Supplies.Split(',').ToList());
-
-            _projectUpdateStrategyFactory.UpdateFor(previousSolutionModel, nextSolutionModel);   
+        _projectUpdateStrategyFactory.UpdateFor(previousSolutionModel, nextSolutionModel);   
             
-            return new();
-        }
+        return new();
     }
 }

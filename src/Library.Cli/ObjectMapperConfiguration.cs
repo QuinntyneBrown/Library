@@ -12,7 +12,7 @@ public static class ObjectMapperConfiguration
     public static void Configure()
     {
         TinyMapper.Bind<Default.DefaultRequest, SolutionReferenceModel>();
-        TinyMapper.Bind<AddProject.Request, ProjectReferenceModel>();
+        TinyMapper.Bind<AddProjectRequestHandler.AddProjectRequest, ProjectReferenceModel>();
         TinyMapper.Bind<CreateWebApi.Request, WebApiProjectReferenceModel>();
     }
 }

@@ -4,51 +4,49 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 
 
-namespace Library.Cli.Commands
+namespace Library.Cli.Commands;
+
+
+[Verb("nuget-add-packages")]
+internal class NugetAddPackagesRequest : IRequest<Unit> {
+    [Option('f', "feed-directory")]
+    public string FeedDirectory { get; set; } = @"C:\packages";
+
+    [Option('d',"directory")]
+    public string Directory { get; set; } = Environment.CurrentDirectory;
+}
+
+internal class NugetAddPackagesRequestHandler : IRequestHandler<NugetAddPackagesRequest, Unit>
 {
-    internal class NugetAddPackages
+    private readonly ILogger<NugetAddPackagesRequestHandler> _logger;
+    private readonly ICommandService _commandService;
+    private readonly IFileSystem _fileSystem;
+
+    public NugetAddPackagesRequestHandler(ILogger<NugetAddPackagesRequestHandler> logger, ICommandService commandService, IFileSystem fileSystem)
     {
-        [Verb("nuget-add-packages")]
-        internal class Request : IRequest<Unit> {
-            [Option('f', "feed-directory")]
-            public string FeedDirectory { get; set; } = @"C:\packages";
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+        _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+    }
 
-            [Option('d',"directory")]
-            public string Directory { get; set; } = Environment.CurrentDirectory;
-        }
+    public async Task<Unit> Handle(NugetAddPackagesRequest request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation($"Handled: {nameof(Commands.NugetAddPackagesRequestHandler)}");
 
-        internal class Handler : IRequestHandler<Request, Unit>
+        _logger.LogInformation($"Feed Directory: {request.FeedDirectory}");
+
+        foreach(var directory in Directory.GetDirectories(request.Directory,"*", SearchOption.AllDirectories))
         {
-            private readonly ILogger _logger;
-            private readonly ICommandService _commandService;
-            private readonly IFileSystem _fileSystem;
-
-            public Handler(ILogger logger, ICommandService commandService, IFileSystem fileSystem)
+            if(Path.GetFileName(directory) != "node_modules")
             {
-                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-                _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
-                _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            }
-
-            public async Task<Unit> Handle(Request request, CancellationToken cancellationToken)
-            {
-                _logger.LogInformation($"Handled: {nameof(NugetAddPackages)}");
-
-                _logger.LogInformation($"Feed Directory: {request.FeedDirectory}");
-
-                foreach(var directory in Directory.GetDirectories(request.Directory,"*", SearchOption.AllDirectories))
+                foreach (var path in Directory.GetFiles(directory, "*.nupkg", SearchOption.AllDirectories))
                 {
-                    if(Path.GetFileName(directory) != "node_modules")
-                    {
-                        foreach (var path in Directory.GetFiles(directory, "*.nupkg", SearchOption.AllDirectories))
-                        {
-                            _commandService.Start($"nuget add {path} -source {request.FeedDirectory}");
-                        }
-                    }
+                    _commandService.Start($"nuget add {path} -source {request.FeedDirectory}");
                 }
-
-                return new();
             }
         }
+
+        return new();
     }
 }
+
