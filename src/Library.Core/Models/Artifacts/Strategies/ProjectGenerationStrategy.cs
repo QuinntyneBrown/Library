@@ -1,30 +1,31 @@
-﻿using Library.Core.Models.Artifacts.Strategies.File.Generation;
+﻿using Library.Core.Models.Artifacts.Strategies.Abstractions;
 using Microsoft.Extensions.Logging;
 
-namespace Library.Core.Models.Artifacts.Strategies.Project.Generation;
+namespace Library.Core.Models.Artifacts.Strategies;
 
-public class ProjectGenerationStrategy : IProjectGenerationStrategy
+public class ProjectGenerationStrategy : ArtifactGenerationStrategyBase<ProjectModel>
 {
     private readonly ICommandService _commandService;
     private readonly IFileSystem _fileSystem;
-    private readonly ILogger _logger;
-    private readonly IFileGenerationStrategyFactory _fileGenerationStrategyFactory;
+    private readonly ILogger<ProjectGenerationStrategy> _logger;
+
     private readonly ICsProjFileManager _csProjFileManager;
 
-    public ProjectGenerationStrategy(ICommandService commandService, ILogger logger, IFileSystem fileSystem, IFileGenerationStrategyFactory fileGenerationStrategyFactory, ICsProjFileManager csProjFileManager)
+    public ProjectGenerationStrategy(
+        IServiceProvider serviceProvider, 
+        ICommandService commandService, 
+        ILogger<ProjectGenerationStrategy> logger, 
+        IFileSystem fileSystem,         
+        ICsProjFileManager csProjFileManager)
+        : base(serviceProvider)
     {
         _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        _fileGenerationStrategyFactory = fileGenerationStrategyFactory ?? throw new ArgumentNullException(nameof(fileGenerationStrategyFactory));
         _csProjFileManager = csProjFileManager ?? throw new ArgumentNullException(nameof(csProjFileManager));
     }
 
-    public int Order => 0;
-
-    public bool CanHandle(ProjectModel model) => true;
-
-    public void Create(ProjectModel model)
+    public override void Create(IArtifactGenerationStrategyFactory artifactGenerationStrategyFactory, ProjectModel model, dynamic context = null)
     {
         var cmd = $"dotnet new {model.ProjectType} -n {model.Name}";
 

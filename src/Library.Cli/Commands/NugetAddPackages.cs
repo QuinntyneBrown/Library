@@ -8,7 +8,7 @@ namespace Library.Cli.Commands;
 
 
 [Verb("nuget-add-packages")]
-internal class NugetAddPackagesRequest : IRequest<Unit> {
+internal class NugetPackagesAddRequest : IRequest<Unit> {
     [Option('f', "feed-directory")]
     public string FeedDirectory { get; set; } = @"C:\packages";
 
@@ -16,7 +16,7 @@ internal class NugetAddPackagesRequest : IRequest<Unit> {
     public string Directory { get; set; } = Environment.CurrentDirectory;
 }
 
-internal class NugetAddPackagesRequestHandler : IRequestHandler<NugetAddPackagesRequest, Unit>
+internal class NugetAddPackagesRequestHandler : IRequestHandler<NugetPackagesAddRequest, Unit>
 {
     private readonly ILogger<NugetAddPackagesRequestHandler> _logger;
     private readonly ICommandService _commandService;
@@ -29,7 +29,7 @@ internal class NugetAddPackagesRequestHandler : IRequestHandler<NugetAddPackages
         _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
     }
 
-    public async Task<Unit> Handle(NugetAddPackagesRequest request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(NugetPackagesAddRequest request, CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Handled: {nameof(Commands.NugetAddPackagesRequestHandler)}");
 

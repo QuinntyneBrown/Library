@@ -1,5 +1,4 @@
 using Library.Cli.Commands;
-using Library.Core;
 using Library.Core.Models.Artifacts;
 using Nelibur.ObjectMapper;
 using System.Runtime.CompilerServices;
@@ -11,7 +10,6 @@ public static class ObjectMapperConfiguration
     [ModuleInitializer]
     public static void Configure()
     {
-        TinyMapper.Bind<DefaultRequest, SolutionReferenceModel>();
-        TinyMapper.Bind<AddProjectRequest, ProjectReferenceModel>();
+        TinyMapper.Bind<SolutionCreateRequest, SolutionReferenceModel>();
     }
 }

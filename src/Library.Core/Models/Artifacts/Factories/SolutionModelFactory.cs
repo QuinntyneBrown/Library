@@ -1,139 +1,115 @@
 ﻿using System.Text.Json;
 using Library.Core.Models.Syntax;
 
-namespace Library.Core.Models.Artifacts.Factories
+namespace Library.Core.Models.Artifacts.Factories;
+public class SolutionModelFactory: ISolutionModelFactory
 {
-    public static class SolutionModelFactory
+    public SolutionModel CreateWebApi(WebApiProjectReferenceModel webApiProjectReferenceModel)
     {
-        public static SolutionModel CreateWebApi(WebApiProjectReferenceModel options)
+        var solutionModel = CreateWebApi(new SolutionReferenceModel { Name = webApiProjectReferenceModel.Name, ReferenceDirectory = webApiProjectReferenceModel.Directory });
+
+        solutionModel.Domain = new List<AggregateRootModel>();
+
+        foreach (var resource in webApiProjectReferenceModel.Resources.Split(','))
         {
-            var solutionModel = CreateWebApi(new SolutionReferenceModel { Name = options.Name, ReferenceDirectory = options.Directory });
+            solutionModel.Domain.Add(new AggregateRootModel(resource));
+        }
 
-            solutionModel.Domain = new List<AggregateRootModel>();
+        for (var i = 0; i < solutionModel.Domain.Count; i++)
+        {
+            var aggregate = solutionModel.Domain.ElementAt(i);
 
-            foreach (var resource in options.Resources.Split(','))
+            var properties = webApiProjectReferenceModel.Properties.Split('|').ElementAt(i);
+
+            foreach (var property in properties.Split(','))
             {
-                solutionModel.Domain.Add(new AggregateRootModel(resource));
+                var propertyName = property.Split(':').ElementAt(0);
+
+                var propertyType = property.Split(':').ElementAt(1);
+
+                aggregate.Properties.Add(new PropertyModel("public", propertyType, propertyName, PropertyAccessorModel.GetSet));
             }
-
-            for (var i = 0; i < solutionModel.Domain.Count; i++)
-            {
-                var aggregate = solutionModel.Domain.ElementAt(i);
-
-                var properties = options.Properties.Split('|').ElementAt(i);
-
-                foreach (var property in properties.Split(','))
-                {
-                    var propertyName = property.Split(':').ElementAt(0);
-
-                    var propertyType = property.Split(':').ElementAt(1);
-
-                    aggregate.Properties.Add(new PropertyModel("public", propertyType, propertyName, PropertyAccessorModel.GetSet));
-                }
-            }
-
-            return solutionModel;
         }
 
-        public static SolutionModel CreateLibrary(SolutionReferenceModel options)
-        {
-            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
+        return solutionModel;
+    }
 
-            var implementation = ProjectModelFactory.CreateLibrary(options.Name, $"{model.SrcDirectory}");
+    public SolutionModel CreateLibrary(SolutionReferenceModel solutionReferenceModel)
+    {
+        var model = new SolutionModel(solutionReferenceModel.Name, solutionReferenceModel.ReferenceDirectory);
 
-            var unitTests = ProjectModelFactory.CreateXUnit($"{options.Name}.UnitTests", $"{model.TestDirectory}");
+        var implementation = ProjectModelFactory.CreateLibrary(solutionReferenceModel.Name, $"{model.SrcDirectory}");
 
-            model.Projects.Add(implementation);
+        var unitTests = ProjectModelFactory.CreateXUnit($"{solutionReferenceModel.Name}.UnitTests", $"{model.TestDirectory}");
 
-            model.Projects.Add(unitTests);
+        model.Projects.Add(implementation);
 
-            model.DependOns.Add(new DependsOnModel(unitTests.Name, implementation.Name));
+        model.Projects.Add(unitTests);
 
-            var tokens = new TokensBuilder()
-                .With("name", (Token)options.Name)
-                .Build();
+        model.DependOns.Add(new DependsOnModel(unitTests.Name, implementation.Name));
 
-            model.Files.Add(FileModelFactory.CreateTemplate(Constants.Templates.ReadMe, "README", model.Directory, "md", tokens));
+        var tokens = new TokensBuilder()
+            .With("name", (Token)solutionReferenceModel.Name)
+            .Build();
 
-            return model;
-        }
+        model.Files.Add(FileModelFactory.CreateTemplate(Constants.Templates.ReadMe, "README", model.Directory, "md", tokens));
 
-        public static SolutionModel CreateWebApi(SolutionReferenceModel options)
-        {
-            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
+        return model;
+    }
 
-            var core = ProjectModelFactory.CreateLibrary($"{options.Name}.Core", $"{model.SrcDirectory}");
+    public SolutionModel CreateWebApi(SolutionReferenceModel solutionReferenceModel)
+    {
+        var model = new SolutionModel(solutionReferenceModel.Name, solutionReferenceModel.ReferenceDirectory);
 
-            var infrastructure = ProjectModelFactory.CreateLibrary($"{options.Name}.Infrastructure", $"{model.SrcDirectory}");
+        var core = ProjectModelFactory.CreateLibrary($"{solutionReferenceModel.Name}.Core", $"{model.SrcDirectory}");
 
-            var api = ProjectModelFactory.CreateWebApi($"{options.Name}.Api", $"{model.SrcDirectory}");
+        var infrastructure = ProjectModelFactory.CreateLibrary($"{solutionReferenceModel.Name}.Infrastructure", $"{model.SrcDirectory}");
 
-            var testing = ProjectModelFactory.CreateLibrary($"{options.Name}.Testing", $"{model.TestDirectory}");
+        var api = ProjectModelFactory.CreateWebApi($"{solutionReferenceModel.Name}.Api", $"{model.SrcDirectory}");
 
-            var unitTests = ProjectModelFactory.CreateXUnit($"{options.Name}.UnitTests", $"{model.TestDirectory}");
+        var testing = ProjectModelFactory.CreateLibrary($"{solutionReferenceModel.Name}.Testing", $"{model.TestDirectory}");
 
-            var integrationTests = ProjectModelFactory.CreateXUnit($"{options.Name}.IntegrationTests", $"{model.TestDirectory}");
+        var unitTests = ProjectModelFactory.CreateXUnit($"{solutionReferenceModel.Name}.UnitTests", $"{model.TestDirectory}");
 
-            model.Projects.Add(api);
+        var integrationTests = ProjectModelFactory.CreateXUnit($"{solutionReferenceModel.Name}.IntegrationTests", $"{model.TestDirectory}");
 
-            model.Projects.Add(infrastructure);
+        model.Projects.Add(api);
 
-            model.Projects.Add(core);
+        model.Projects.Add(infrastructure);
 
-            model.Projects.Add(testing);
+        model.Projects.Add(core);
 
-            model.Projects.Add(unitTests);
+        model.Projects.Add(testing);
 
-            model.Projects.Add(integrationTests);
+        model.Projects.Add(unitTests);
 
-            model.DependOns.Add(new DependsOnModel(api.Name, infrastructure.Name));
+        model.Projects.Add(integrationTests);
 
-            model.DependOns.Add(new DependsOnModel(infrastructure.Name, core.Name));
+        model.DependOns.Add(new DependsOnModel(api.Name, infrastructure.Name));
 
-            model.DependOns.Add(new DependsOnModel(unitTests.Name, testing.Name));
+        model.DependOns.Add(new DependsOnModel(infrastructure.Name, core.Name));
 
-            model.DependOns.Add(new DependsOnModel(integrationTests.Name, testing.Name));
+        model.DependOns.Add(new DependsOnModel(unitTests.Name, testing.Name));
 
-            model.DependOns.Add(new DependsOnModel(testing.Name, api.Name));
+        model.DependOns.Add(new DependsOnModel(integrationTests.Name, testing.Name));
 
-            var tokens = new TokensBuilder()
-                .With("name", (Token)options.Name)
-                .Build();
+        model.DependOns.Add(new DependsOnModel(testing.Name, api.Name));
 
-            model.Files.Add(FileModelFactory.CreateTemplate(Constants.Templates.ReadMe, "README", model.Directory, "md", tokens));
+        var tokens = new TokensBuilder()
+            .With("name", (Token)solutionReferenceModel.Name)
+            .Build();
 
-            return model;
-        }
+        model.Files.Add(FileModelFactory.CreateTemplate(Constants.Templates.ReadMe, "README", model.Directory, "md", tokens));
 
-        public static SolutionModel CreateMinimalApi(SolutionReferenceModel options)
-        {
-            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
+        return model;
+    }
 
-            return model;
-        }
+    public SolutionModel ReHydrate(string path)
+    {
+        var json = File.ReadAllText($"{path}{Path.DirectorySeparatorChar}solution.json");
 
-        public static SolutionModel CreateFunction(SolutionReferenceModel options)
-        {
-            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
+        var model = JsonSerializer.Deserialize<SolutionModel>(json);
 
-            return model;
-        }
-
-        public static SolutionModel CreateMicroservice(SolutionReferenceModel options)
-        {
-            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
-
-            return model;
-        }
-
-
-        public static SolutionModel ReHydrate(string path)
-        {
-            var json = File.ReadAllText($"{path}{Path.DirectorySeparatorChar}solution.json");
-
-            var model = JsonSerializer.Deserialize<SolutionModel>(json);
-
-            return model!;
-        }
+        return model!;
     }
 }

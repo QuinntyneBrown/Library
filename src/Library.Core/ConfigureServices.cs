@@ -1,8 +1,8 @@
 ﻿using Library.Core;
+using Library.Core.Models.Artifacts.Factories;
 using Library.Core.Models.Artifacts.Services;
-using Library.Core.Models.Artifacts.Strategies.File.Generation;
-using Library.Core.Models.Artifacts.Strategies.Project.Generation;
-using Library.Core.Models.Artifacts.Strategies.Solution.Generation;
+using Library.Core.Models.Artifacts.Strategies;
+using Library.Core.Models.Artifacts.Strategies.Abstractions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -17,12 +17,17 @@ public static class ConfigureServices
         services.AddSingleton<ITenseConverter, TenseConverter>();
         services.AddSingleton<INamespaceProvider, NamespaceProvider>();
         services.AddSingleton<IFileProvider, FileProvider>();
-        services.AddSingleton<ISolutionGenerationStrategyFactory, SolutionGenerationStrategyFactory>();
-        services.AddSingleton<ISolutionGenerationStrategy, SolutionGenerationStrategy>();
+        
+        
         services.AddSingleton<ICsProjFileManager, CsProjFileManager>();
-        services.AddSingleton<IFileGenerationStrategyFactory, FileGenerationStrategyFactory>();
         services.AddSingleton<ISolutionService, SolutionService>();
-        services.AddSingleton<IProjectGenerationStrategyFactory, ProjectGenerationStrategyFactory>();
+        
+        services.AddSingleton<IArtifactGenerationStrategyFactory, ArtifactGenerationStrategyFactory>();
+        services.AddSingleton<IArtifactGenerationStrategy, SolutionGenerationStrategy>();
+        services.AddSingleton<IArtifactGenerationStrategy, ProjectGenerationStrategy>();
+
+        services.AddSingleton<ISolutionModelFactory, SolutionModelFactory>();
+
         return services;
     }
 }

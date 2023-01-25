@@ -1,34 +1,28 @@
-﻿using Library.Core.Models.Artifacts.Strategies.File.Generation;
-using Library.Core.Models.Artifacts.Strategies.Project.Generation;
+﻿using Library.Core.Models.Artifacts.Strategies.Abstractions;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using static System.Text.Json.JsonSerializer;
 
-namespace Library.Core.Models.Artifacts.Strategies.Solution.Generation;
+namespace Library.Core.Models.Artifacts.Strategies;
 
-public class SolutionGenerationStrategy : ISolutionGenerationStrategy
+public class SolutionGenerationStrategy : ArtifactGenerationStrategyBase<SolutionModel>
 {
     private readonly ICommandService _commandService;
     private readonly IFileSystem _fileSystem;
-    private readonly ILogger _logger;
-    private readonly IFileGenerationStrategyFactory _fileGenerationStrategyFactory;
+    private readonly ILogger<SolutionGenerationStrategy> _logger;
     private readonly ICsProjFileManager _csProjFileManager;
-    private readonly IProjectGenerationStrategyFactory _projectGenerationStrategyFactory;
-    public SolutionGenerationStrategy(ICommandService commandService, ILogger logger, IFileSystem fileSystem, IFileGenerationStrategyFactory fileGenerationStrategyFactory, ICsProjFileManager csProjFileManager, IProjectGenerationStrategyFactory projectGenerationStrategyFactory)
+ 
+
+    public SolutionGenerationStrategy(IServiceProvider serviceProvider, ICommandService commandService, ILogger<SolutionGenerationStrategy> logger, IFileSystem fileSystem, ICsProjFileManager csProjFileManager)
+        : base(serviceProvider)
     {
         _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-        _fileGenerationStrategyFactory = fileGenerationStrategyFactory ?? throw new ArgumentNullException(nameof(fileGenerationStrategyFactory));
         _csProjFileManager = csProjFileManager ?? throw new ArgumentNullException(nameof(csProjFileManager));
-        _projectGenerationStrategyFactory = projectGenerationStrategyFactory;
     }
 
-    public int Order => 0;
-
-    public bool CanHandle(SolutionModel model) => true;
-
-    public void Create(SolutionModel model)
+    public override void Create(IArtifactGenerationStrategyFactory artifactGenerationStrategyFactory, SolutionModel model, dynamic? context = null)
     {
         _logger.LogInformation($"{nameof(SolutionGenerationStrategy)}: Creating new solution name {model.Name} in {model.ParentDirectory}");
 
@@ -42,7 +36,7 @@ public class SolutionGenerationStrategy : ISolutionGenerationStrategy
 
         foreach (var project in model.Projects.OrderBy(x => x.Order))
         {
-            _projectGenerationStrategyFactory.CreateFor(project);
+            artifactGenerationStrategyFactory.CreateFor(project);
 
             _commandService.Start($"dotnet sln add {project.Directory}{Path.DirectorySeparatorChar}{project.Name}.csproj", model.Directory);
         }
@@ -69,7 +63,7 @@ public class SolutionGenerationStrategy : ISolutionGenerationStrategy
 
                 foreach (var file in model.Files)
                 {
-                    _fileGenerationStrategyFactory.CreateFor(file);
+                    artifactGenerationStrategyFactory.CreateFor(file);
                     newLines.Add($"		{file.Name}.{file.Extension} = {file.Name}.{file.Extension}");
                 }
 
@@ -92,4 +86,6 @@ public class SolutionGenerationStrategy : ISolutionGenerationStrategy
 
         _fileSystem.WriteAllLines($"{model.Directory}{Path.DirectorySeparatorChar}solution.json", new string[1] { json });
     }
+
+
 }

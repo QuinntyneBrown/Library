@@ -1,24 +1,23 @@
 using SimpleNLG;
 
-namespace Library.Core
+namespace Library.Core;
+
+
+public class TenseConverter : ITenseConverter
 {
-
-    public class TenseConverter : ITenseConverter
+    public string Convert(string value, bool pastTense = true)
     {
-        public string Convert(string value, bool pastTense = true)
-        {
-            Lexicon lexicon = Lexicon.getDefaultLexicon();
+        Lexicon lexicon = Lexicon.getDefaultLexicon();
 
-            NLGFactory phraseFactory = new NLGFactory(lexicon);
+        NLGFactory phraseFactory = new NLGFactory(lexicon);
 
-            var clause = phraseFactory.createVerbPhrase(value);
+        var clause = phraseFactory.createVerbPhrase(value);
 
-            clause.setFeature(Feature.TENSE.ToString(), pastTense ? Tense.PAST : Tense.PRESENT);
+        clause.setFeature(Feature.TENSE.ToString(), pastTense ? Tense.PAST : Tense.PRESENT);
 
-            DocumentElement documentElement = phraseFactory.createSentence(clause);
+        DocumentElement documentElement = phraseFactory.createSentence(clause);
 
-            return new Realiser(lexicon).realise(documentElement).getRealisation().Replace(".", "");
+        return new Realiser(lexicon).realise(documentElement).getRealisation().Replace(".", "");
 
-        }
     }
 }

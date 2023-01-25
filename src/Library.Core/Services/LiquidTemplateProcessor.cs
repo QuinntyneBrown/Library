@@ -1,75 +1,71 @@
 using DotLiquid;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 
 
-namespace Library.Core
+namespace Library.Core;
+
+public class LiquidTemplateProcessor : ITemplateProcessor
 {
-    public class LiquidTemplateProcessor : ITemplateProcessor
+    private readonly ILogger<LiquidTemplateProcessor> _logger;
+    public LiquidTemplateProcessor(ILogger<LiquidTemplateProcessor> logger)
     {
-        private readonly ILogger _logger;
-        public LiquidTemplateProcessor(ILogger logger)
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public string[] Process(string[] template, IDictionary<string, object> tokens, string[] ignoreTokens = null)
-        {
-            Hash hash = default;
+    public string[] Process(string[] template, IDictionary<string, object> tokens, string[] ignoreTokens = null)
+    {
+        Hash hash = default;
 
-            try
+        try
+        {
+            if (ignoreTokens != null)
             {
-                if (ignoreTokens != null)
-                {
-                    var dictionary = ImmutableDictionary.CreateBuilder<string, object>();
+                var dictionary = ImmutableDictionary.CreateBuilder<string, object>();
 
-                    foreach (var entry in tokens)
+                foreach (var entry in tokens)
+                {
+                    if (!ignoreTokens.Contains(entry.Key))
                     {
-                        if (!ignoreTokens.Contains(entry.Key))
-                        {
-                            dictionary.Add(entry.Key, entry.Value);
-                        }
+                        dictionary.Add(entry.Key, entry.Value);
                     }
-
-                    hash = Hash.FromDictionary(dictionary);
-
-                }
-                else
-                {
-                    hash = Hash.FromDictionary(tokens);
                 }
 
-                var liquidTemplate = Template.Parse(string.Join(Environment.NewLine, template));
+                hash = Hash.FromDictionary(dictionary);
 
-                return liquidTemplate.Render(hash).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             }
-            catch (Exception e)
+            else
             {
-                _logger.LogError(nameof(LiquidTemplateProcessor));
-
-                throw;
+                hash = Hash.FromDictionary(tokens);
             }
+
+            var liquidTemplate = Template.Parse(string.Join(Environment.NewLine, template));
+
+            return liquidTemplate.Render(hash).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
         }
-
-        public string Process(string template, IDictionary<string, object> tokens)
+        catch (Exception e)
         {
-            try
-            {
-                var hash = Hash.FromDictionary(tokens);
+            _logger.LogError(nameof(LiquidTemplateProcessor));
 
-                var liquidTemplate = Template.Parse(template);
+            throw;
+        }
+    }
 
-                return liquidTemplate.Render(hash);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(nameof(LiquidTemplateProcessor));
+    public string Process(string template, IDictionary<string, object> tokens)
+    {
+        try
+        {
+            var hash = Hash.FromDictionary(tokens);
 
-                throw;
-            }
+            var liquidTemplate = Template.Parse(template);
+
+            return liquidTemplate.Render(hash);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(nameof(LiquidTemplateProcessor));
+
+            throw;
         }
     }
 }

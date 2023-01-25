@@ -1,28 +1,28 @@
 using Library.Core;
+using Microsoft.Extensions.Logging;
+using System.Net.NetworkInformation;
 using System.Reflection;
 
 namespace Library.Infrastructure;
 
 
-public static class StringListExtensions
-{
-    public static string GetResourceName(this string[] collection, string name)
-        => collection.SingleOrDefault(x => x.EndsWith(name)) == null ?
-            collection.SingleOrDefault(x => x.EndsWith($".{name}.txt"))
-            : collection.SingleOrDefault(x => x.EndsWith(name));
-}
-
 public class TemplateLocator : ITemplateLocator
 {
-    public TemplateLocator()
-    {
+    private readonly ILogger<TemplateLocator> _logger;
 
+
+    public TemplateLocator(ILogger<TemplateLocator> logger)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));    
     }
+
     public string[] Get(string name)
     {
         foreach (Assembly _assembly in AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().FullName.Contains(nameof(Library.Infrastructure))).Distinct())
         {
-            var resourceName = _assembly.GetManifestResourceNames().GetResourceName(name);
+            var resourceNames = _assembly.GetManifestResourceNames();
+
+            var resourceName = getresourceName(resourceNames);
 
             if (!string.IsNullOrEmpty(resourceName))
             {
@@ -30,7 +30,15 @@ public class TemplateLocator : ITemplateLocator
             }
         }
 
-        throw new Exception("");
+        string getresourceName(string[] resourceNames)
+        {
+            return resourceNames.SingleOrDefault(x => x.EndsWith(name)) == null ?
+                resourceNames.Single(x => x.EndsWith($".{name}.txt")) : resourceNames.Single(x => x.EndsWith(name));
+        }
+
+        _logger.LogCritical("Name not found {0}", name);
+
+        throw new Exception("Not Found");
     }
 
     public string[] GetResource(Assembly assembly, string name)
@@ -39,14 +47,15 @@ public class TemplateLocator : ITemplateLocator
 
         using (var stream = assembly.GetManifestResourceStream(name))
         {
-            using (var streamReader = new StreamReader(stream))
+            using (var streamReader = new StreamReader(stream!))
             {
                 string line;
-                while ((line = streamReader.ReadLine()) != null)
+                while ((line = streamReader.ReadLine()!) != null)
                 {
                     lines.Add(line);
                 }
             }
+
             return lines.ToArray();
         }
     }
