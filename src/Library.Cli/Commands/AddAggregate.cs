@@ -8,7 +8,7 @@ namespace Library.Cli.Commands
     internal class AddAggregate
     {
         [Verb("add-aggregate")]
-        internal class Request : IRequest<Unit> {
+        internal class AddAggregateRequest : IRequest<Unit> {
             [Option('n',"name")]
             public string Name { get; set; } = string.Empty;
             [Option('p', "properties")]
@@ -17,16 +17,16 @@ namespace Library.Cli.Commands
             public string Directory { get; set; } = Environment.CurrentDirectory;
         }
 
-        internal class Handler : IRequestHandler<Request, Unit>
+        internal class AddAggregateRequestHandler : IRequestHandler<AddAggregateRequest, Unit>
         {
             private readonly ILogger _logger;
 
-            public Handler(ILogger logger)
+            public AddAggregateRequestHandler(ILogger logger)
             {
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
 
-            public async Task<Unit> Handle(Request request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(AddAggregateRequest request, CancellationToken cancellationToken)
             {
                 _logger.LogInformation($"Handled: {nameof(AddAggregate)}");
 

@@ -12,7 +12,7 @@ namespace Library.Core.Models.Services
             _factory = factory;
         }
 
-        public void Generate(SolutionModel model)
+        public void Create(SolutionModel model)
         {
             _factory.CreateFor(model);
         }

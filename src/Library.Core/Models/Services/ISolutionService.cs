@@ -4,5 +4,5 @@ namespace Library.Core.Models.Services;
 
 public interface ISolutionService
 {
-    void Generate(SolutionModel model);
+    void Create(SolutionModel model);
 }

@@ -6,68 +6,65 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Nelibur.ObjectMapper;
 
-namespace Library.Core
+namespace Library.Core;
+
+
+[Verb("default")]
+public class DefaultRequest : IRequest<Unit> {
+    [Option('n',"name")]
+    public string Name { get; set; } = string.Empty;
+
+    [Option('p', "preset")]
+    public string Preset { get; set; } = "library";
+        
+    [Option('l', "preset-list")]
+    public bool PresetList { get; set; }
+
+    [Option('d',"directory")]
+    public string Directory { get; set; } = Environment.CurrentDirectory;
+}
+
+public class DefaultRequestHandler : IRequestHandler<DefaultRequest, Unit>
 {
-    public class Default
+    private readonly ILogger<DefaultRequestHandler> _logger;
+    private readonly ISolutionService _solutionService;
+    private readonly Dictionary<string, Func<SolutionReferenceModel, SolutionModel>> _recipeDictionary = new()
     {
-        [Verb("default")]
-        public class Request : IRequest<Unit> {
-            [Option('n',"name")]
-            public string Name { get; set; } = string.Empty;
+        { "library", SolutionModelFactory.CreateLibrary },
+        { "webapi", SolutionModelFactory.CreateWebApi },
+        { "minimal-api", SolutionModelFactory.CreateMinimalApi },
+        { "microservice", SolutionModelFactory.CreateMicroservice },
+        { "function", SolutionModelFactory.CreateFunction }
+    };
 
-            [Option('r', "recipe")]
-            public string Receipe { get; set; } = "library";
-            
-            [Option('l', "recipe-list")]
-            public bool RecipeList { get; set; }
+    public DefaultRequestHandler(ILogger<DefaultRequestHandler> logger, ISolutionService libraryGenerator)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _solutionService = libraryGenerator?? throw new ArgumentNullException(nameof(libraryGenerator));
+    }
 
-            [Option('d',"directory")]
-            public string Directory { get; set; } = Environment.CurrentDirectory;
-        }
+    public async Task<Unit> Handle(DefaultRequest request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation($"{nameof(DefaultRequestHandler)}: Handled");
 
-        public class Handler : IRequestHandler<Request, Unit>
+        if(request.PresetList)
         {
-            private readonly ILogger _logger;
-            private readonly ISolutionService _libraryGenerator;
-            private readonly Dictionary<string, Func<SolutionReferenceModel, SolutionModel>> _recipeDictionary = new()
-            {
-                { "library", SolutionModelFactory.CreateLibrary },
-                { "webapi", SolutionModelFactory.CreateWebApi },
-                { "minimal-api", SolutionModelFactory.CreateMinimalApi },
-                { "microservice", SolutionModelFactory.CreateMicroservice },
-                { "function", SolutionModelFactory.CreateFunction }
-            };
+            _logger.LogInformation("Recipe List");
 
-            public Handler(ILogger logger, ISolutionService libraryGenerator)
+            foreach(var item in _recipeDictionary)
             {
-                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-                _libraryGenerator = libraryGenerator?? throw new ArgumentNullException(nameof(libraryGenerator));
+                _logger.LogInformation(item.Key);
             }
 
-            public async Task<Unit> Handle(Request request, CancellationToken cancellationToken)
-            {
-                _logger.LogInformation($"{nameof(Default)}: Handled");
-
-                if(request.RecipeList)
-                {
-                    Console.WriteLine("Recipe List");
-
-                    foreach(var item in _recipeDictionary)
-                    {
-                        Console.WriteLine(item.Key);
-                    }
-
-                    return new();
-                }
-
-                var options = TinyMapper.Map<SolutionReferenceModel>(request);
-
-                var model = _recipeDictionary[request.Receipe](options);
-
-                _libraryGenerator.Generate(model);
-
-                return new();
-            }
+            return new();
         }
+
+        var referenceModel = TinyMapper.Map<SolutionReferenceModel>(request);
+
+        var model = _recipeDictionary[request.Preset](referenceModel);
+
+        _solutionService.Create(model);
+
+        return new();
     }
 }
