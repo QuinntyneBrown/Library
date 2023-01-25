@@ -17,6 +17,7 @@ namespace Library.Core.Models
             Order = order;
         }
 
+        public string Framework { get; set; } = Constants.Framework.NetCore;
         public string Name { get; set; } = string.Empty;
         public string Path => $"{Directory}{DirectorySeparatorChar}{Name}.csproj";        
         public DotNetProjectType DotNetProjectType { get; set; } = DotNetProjectType.ClassLib;

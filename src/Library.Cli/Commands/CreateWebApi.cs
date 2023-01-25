@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 
 
-namespace Library.Application.Commands;
+namespace Library.Cli.Commands;
 
 public class CreateWebApi
 {

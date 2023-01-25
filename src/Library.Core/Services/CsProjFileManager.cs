@@ -33,5 +33,10 @@ namespace Library.Core
 
             doc.Save(model.Path);
         }
+
+        public void ConvertToFramework48(ProjectModel model)
+        {
+
+        }
     }
 }

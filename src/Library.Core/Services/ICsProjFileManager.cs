@@ -6,5 +6,6 @@ namespace Library.Core
     {
         void AddUserSecretsId(string csprojFilePath);
         void AddNugetConfiguration(ProjectModel model);
+        void ConvertToFramework48(ProjectModel model);
     }
 }

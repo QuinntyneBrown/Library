@@ -1,7 +1,7 @@
 using CommandLine;
-using Library.Core.Factories;
+using Library.Core.Models.Factories;
+using Library.Core.Models.Strategies.Solution.Update;
 using Library.Core.Options;
-using Library.Core.Strategies;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Nelibur.ObjectMapper;

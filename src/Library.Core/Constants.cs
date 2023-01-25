@@ -19,5 +19,11 @@
             public const string Testing = nameof(Testing);
             public const string NugetPackage = nameof(NugetPackage);
         }
+
+        public static class Framework
+        {
+            public const string NetCore = nameof(NetCore);
+            public const string NetFramework48 = nameof(NetFramework48);
+        }
     }
 }

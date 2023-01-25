@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Nelibur.ObjectMapper;
 
-namespace Library.Application
+namespace Library.Core
 {
     public class Default
     {
