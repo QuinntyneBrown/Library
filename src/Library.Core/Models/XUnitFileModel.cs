@@ -1,16 +1,15 @@
-﻿namespace Library.Core.Models
+﻿namespace Library.Core.Models;
+
+public class XUnitFileModel : FileModel
 {
-    public class XUnitFileModel : FileModel
+    public XUnitFileModel(string @namespace, string name, string sut, string directory)
+        : base(name, "cs", directory)
     {
-        public XUnitFileModel(string @namespace, string name, string sut, string directory)
-            : base(name, "cs", directory)
-        {
-            Namespace = @namespace;
-            Sut = sut;
-        }
-
-        public string Sut { get; set; }
-        public string Namespace { get; set; } = string.Empty;
-
+        Namespace = @namespace;
+        Sut = sut;
     }
+
+    public string Sut { get; set; }
+    public string Namespace { get; set; } = string.Empty;
+
 }

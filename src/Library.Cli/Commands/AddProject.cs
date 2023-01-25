@@ -1,7 +1,7 @@
 using CommandLine;
+using Library.Core.Models;
 using Library.Core.Models.Factories;
 using Library.Core.Models.Strategies.Solution.Update;
-using Library.Core.Options;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Nelibur.ObjectMapper;
@@ -45,11 +45,11 @@ public class AddProject
         {
             _logger.LogInformation($"Handled: {nameof(AddProject)}");
 
-            var options = TinyMapper.Map<AddProjectOptions>(request);
+            var options = TinyMapper.Map<ProjectReferenceModel>(request);
 
-            var previousSolutionModel = SolutionModelFactory.ReHydrate(options.Directory);
+            var previousSolutionModel = SolutionModelFactory.ReHydrate(options.ReferenceDirectory);
 
-            var nextSolutionModel = SolutionModelFactory.ReHydrate(options.Directory);
+            var nextSolutionModel = SolutionModelFactory.ReHydrate(options.ReferenceDirectory);
 
             var projectModel = request.ProjectType switch
             {

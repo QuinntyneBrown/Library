@@ -2,7 +2,6 @@ using CommandLine;
 using Library.Core.Models;
 using Library.Core.Models.Factories;
 using Library.Core.Models.Services;
-using Library.Core.Options;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Nelibur.ObjectMapper;
@@ -30,7 +29,7 @@ namespace Library.Core
         {
             private readonly ILogger _logger;
             private readonly ISolutionService _libraryGenerator;
-            private readonly Dictionary<string, Func<CreateSolutionOptions, SolutionModel>> _recipeDictionary = new()
+            private readonly Dictionary<string, Func<SolutionReferenceModel, SolutionModel>> _recipeDictionary = new()
             {
                 { "library", SolutionModelFactory.CreateLibrary },
                 { "webapi", SolutionModelFactory.CreateWebApi },
@@ -61,7 +60,7 @@ namespace Library.Core
                     return new();
                 }
 
-                var options = TinyMapper.Map<CreateSolutionOptions>(request);
+                var options = TinyMapper.Map<SolutionReferenceModel>(request);
 
                 var model = _recipeDictionary[request.Receipe](options);
 

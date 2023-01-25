@@ -1,10 +1,10 @@
-﻿namespace Library.Core.Options;
+﻿namespace Library.Core.Models;
 
-public class AddProjectOptions
+public class ProjectReferenceModel
 {
     public string Name { get; set; } = string.Empty;
     public string ProjectType { get; set; } = string.Empty;
-    public string Directory { get; set; } = string.Empty;
+    public string ReferenceDirectory { get; set; } = string.Empty;
     public string DependsOns { get; set; } = string.Empty;
     public string Supplies { get; set; } = string.Empty;
 

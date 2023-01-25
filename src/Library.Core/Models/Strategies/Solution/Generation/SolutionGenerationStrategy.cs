@@ -52,7 +52,7 @@ namespace Library.Core.Models.Strategies.Solution.Generation
             {
                 var client = model.Projects.Single(x => x.Name == dependsOn.Client);
 
-                var supplier = model.Projects.Single(x => x.Name == dependsOn.Supplier);
+                var supplier = model.Projects.Single(x => x.Name == dependsOn.Service);
 
                 _commandService.Start($"dotnet add {client.Directory} reference {supplier.Directory}{Path.DirectorySeparatorChar}{supplier.Name}.csproj");
             }

@@ -1,14 +1,13 @@
-﻿namespace Library.Core.Models
-{
-    public class DependsOnModel
-    {
-        public string Client { get; init; }
-        public string Supplier { get; init; }
+﻿namespace Library.Core.Models;
 
-        public DependsOnModel(string client, string supplier)
-        {
-            Client = client;
-            Supplier = supplier;
-        }
+public class DependsOnModel
+{
+    public string Client { get; init; }
+    public string Service { get; init; }
+
+    public DependsOnModel(string client, string supplier)
+    {
+        Client = client;
+        Service = supplier;
     }
 }

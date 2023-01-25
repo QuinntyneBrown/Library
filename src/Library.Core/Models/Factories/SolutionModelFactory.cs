@@ -1,14 +1,12 @@
-﻿using Library.Core.Models;
-using Library.Core.Options;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Library.Core.Models.Factories
 {
     public static class SolutionModelFactory
     {
-        public static SolutionModel CreateWebApi(CreateWebApiOptions options)
+        public static SolutionModel CreateWebApi(WebApiProjectReferenceModel options)
         {
-            var solutionModel = CreateWebApi(new CreateSolutionOptions { Name = options.Name, Directory = options.Directory });
+            var solutionModel = CreateWebApi(new SolutionReferenceModel { Name = options.Name, ReferenceDirectory = options.Directory });
 
             solutionModel.Domain = new List<AggregateRootModel>();
 
@@ -36,9 +34,9 @@ namespace Library.Core.Models.Factories
             return solutionModel;
         }
 
-        public static SolutionModel CreateLibrary(CreateSolutionOptions options)
+        public static SolutionModel CreateLibrary(SolutionReferenceModel options)
         {
-            var model = new SolutionModel(options.Name, options.Directory);
+            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
 
             var implementation = ProjectModelFactory.CreateLibrary(options.Name, $"{model.SrcDirectory}");
 
@@ -59,9 +57,9 @@ namespace Library.Core.Models.Factories
             return model;
         }
 
-        public static SolutionModel CreateWebApi(CreateSolutionOptions options)
+        public static SolutionModel CreateWebApi(SolutionReferenceModel options)
         {
-            var model = new SolutionModel(options.Name, options.Directory);
+            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
 
             var core = ProjectModelFactory.CreateLibrary($"{options.Name}.Core", $"{model.SrcDirectory}");
 
@@ -106,23 +104,23 @@ namespace Library.Core.Models.Factories
             return model;
         }
 
-        public static SolutionModel CreateMinimalApi(CreateSolutionOptions options)
+        public static SolutionModel CreateMinimalApi(SolutionReferenceModel options)
         {
-            var model = new SolutionModel(options.Name, options.Directory);
+            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
 
             return model;
         }
 
-        public static SolutionModel CreateFunction(CreateSolutionOptions options)
+        public static SolutionModel CreateFunction(SolutionReferenceModel options)
         {
-            var model = new SolutionModel(options.Name, options.Directory);
+            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
 
             return model;
         }
 
-        public static SolutionModel CreateMicroservice(CreateSolutionOptions options)
+        public static SolutionModel CreateMicroservice(SolutionReferenceModel options)
         {
-            var model = new SolutionModel(options.Name, options.Directory);
+            var model = new SolutionModel(options.Name, options.ReferenceDirectory);
 
             return model;
         }

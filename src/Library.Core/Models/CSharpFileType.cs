@@ -1,8 +1,7 @@
-﻿namespace Library.Core.Models
+﻿namespace Library.Core.Models;
+
+public enum CSharpFileType
 {
-    public enum CSharpFileType
-    {
-        Implementation,
-        Interface
-    }
+    Implementation,
+    Interface
 }
