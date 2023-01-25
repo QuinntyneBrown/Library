@@ -1,52 +1,50 @@
 using CommandLine;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace Library.Cli;
+var mediator = BuildContainer().GetService<IMediator>();
 
-class Program
+ProcessArgs(mediator!, args);
+
+static Parser _createParser() => new(options =>
 {
-    static void Main(string[] args)
-    {
-        var mediator = BuildContainer().GetService<IMediator>();
+    options.CaseSensitive = false;
+    options.HelpWriter = Console.Out;
+    options.IgnoreUnknownArguments = true;
+});
 
-        ProcessArgs(mediator, args);
-    }
-
-    private static Parser _createParser() => new (options =>
-    {
-        options.CaseSensitive = false;
-        options.HelpWriter = Console.Out;
-        options.IgnoreUnknownArguments = true;
-    });
-
-    public static ServiceProvider BuildContainer()
-    {
-        var services = new ServiceCollection();
-
-        services.AddCoreServices();
-
-        services.AddInfrastructureServices();
-
-        services.AddCliServices();
-
-        return services.BuildServiceProvider();
-    }
-
-    public static void ProcessArgs(IMediator mediator, string[] args)
-    {
-        if (args.Length == 0 || args[0].StartsWith("-"))
+static IServiceProvider BuildContainer()
+{
+    var host = Host.CreateDefaultBuilder()
+        .ConfigureServices(services =>
         {
-            args = new string[1] { "default" }.Concat(args).ToArray();
-        }
+            services.AddLogging(o => o.AddConsole());
 
-        var verbs = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(s => s.GetTypes())
-            .Where(type => type.GetCustomAttributes(typeof(VerbAttribute), true).Length > 0)
-            .ToArray();
+            services.AddCoreServices();
 
-        _createParser().ParseArguments(args, verbs)
-            .WithParsed(
-              (dynamic request) => mediator.Send(request));
+            services.AddInfrastructureServices();
+
+            services.AddCliServices();
+        }).Build();
+
+    return host.Services;
+}
+
+static void ProcessArgs(IMediator mediator, string[] args)
+{
+    if (args.Length == 0 || args[0].StartsWith("-"))
+    {
+        args = new string[1] { "default" }.Concat(args).ToArray();
     }
+
+    var verbs = AppDomain.CurrentDomain.GetAssemblies()
+        .SelectMany(s => s.GetTypes())
+        .Where(type => type.GetCustomAttributes(typeof(VerbAttribute), true).Length > 0)
+        .ToArray();
+
+    _createParser().ParseArguments(args, verbs)
+        .WithParsed(
+          (dynamic request) => mediator.Send(request));
 }
