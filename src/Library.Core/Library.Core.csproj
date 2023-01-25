@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Strategies\File\Update\" />
+    <Folder Include="Models\Artifacts\Strategies\File\Update\" />
   </ItemGroup>
 
 </Project>

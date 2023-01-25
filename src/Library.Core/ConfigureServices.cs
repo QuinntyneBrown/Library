@@ -1,8 +1,8 @@
 ﻿using Library.Core;
-using Library.Core.Models.Services;
-using Library.Core.Models.Strategies.File.Generation;
-using Library.Core.Models.Strategies.Project.Generation;
-using Library.Core.Models.Strategies.Solution.Generation;
+using Library.Core.Models.Artifacts.Services;
+using Library.Core.Models.Artifacts.Strategies.File.Generation;
+using Library.Core.Models.Artifacts.Strategies.Project.Generation;
+using Library.Core.Models.Artifacts.Strategies.Solution.Generation;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

@@ -1,4 +1,4 @@
-﻿using Library.Core.Models;
+﻿using Library.Core.Models.Artifacts;
 
 namespace Library.Core
 {

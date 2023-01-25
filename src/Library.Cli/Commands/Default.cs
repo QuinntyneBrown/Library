@@ -1,7 +1,7 @@
 using CommandLine;
-using Library.Core.Models;
-using Library.Core.Models.Factories;
-using Library.Core.Models.Services;
+using Library.Core.Models.Artifacts;
+using Library.Core.Models.Artifacts.Factories;
+using Library.Core.Models.Artifacts.Services;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Nelibur.ObjectMapper;
