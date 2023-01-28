@@ -31,7 +31,7 @@ internal class NugetAddPackagesRequestHandler : IRequestHandler<NugetPackagesAdd
 
     public async Task<Unit> Handle(NugetPackagesAddRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Handled: {nameof(Commands.NugetAddPackagesRequestHandler)}");
+        _logger.LogInformation("Handled: {0}", nameof(NugetAddPackagesRequestHandler));
 
         _logger.LogInformation($"Feed Directory: {request.FeedDirectory}");
 

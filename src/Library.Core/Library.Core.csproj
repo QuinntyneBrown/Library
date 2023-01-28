@@ -29,4 +29,9 @@
     <PackageReference Include="TinyMapper" Version="3.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Artifacts\Commands\" />
+    <Folder Include="Models\Syntax\Commands\" />
+  </ItemGroup>
+
 </Project>

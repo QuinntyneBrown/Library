@@ -1,10 +1,30 @@
 ﻿namespace Library.Core.Models.Syntax;
 
-public class ClassModel
+public class ClassModel : InterfaceModel
 {
-    public List<PropertyModel> Properties { get; set; } = new List<PropertyModel>();
+    public ClassModel(string name)
+        : base(name)
+    {
+        Fields = new List<FieldModel>();
+        Constructors = new List<ConstructorModel>();
+        Attributes = new List<AttributeModel>();
+        AccessModifier = AccessModifier.Public;
+    }
 
-    public List<ConstructorModel> Constructors { get; set; } = new List<ConstructorModel>();
+    public AccessModifier AccessModifier { get; set; }
+    public List<FieldModel> Fields { get; set; }
+    public List<ConstructorModel> Constructors { get; set; }
+    public List<AttributeModel> Attributes { get; set; }
+    public bool Static { get; set; }
 
-    public List<MethodModel> Methods { get; set; } = new List<MethodModel>();
+    public void AddMethod(MethodModel method)
+    {
+        Methods.Add(method);
+    }
+
+    public ClassModel CreateDto()
+        => new ClassModel($"{Name}Dto")
+        {
+            Properties = Properties
+        };
 }

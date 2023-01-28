@@ -27,7 +27,7 @@ public class SolutionModelFactory: ISolutionModelFactory
 
                 var propertyType = property.Split(':').ElementAt(1);
 
-                aggregate.Properties.Add(new PropertyModel("public", propertyType, propertyName, PropertyAccessorModel.GetSet));
+                aggregate.Properties.Add(new PropertyModel(aggregate as dynamic, AccessModifier.Public, new TypeModel(propertyType), propertyName, PropertyAccessorModel.GetSet));
             }
         }
 
