@@ -21,7 +21,7 @@
         {
             IdPropertyType = useIntIdPropertyType ? "int" : "Guid";
 
-            IdPropertyName = useShortIdProperty ? "Id" : $"{((Token)name).PascalCase}Id";
+            IdPropertyName = useShortIdProperty ? "Id" : $"{((SyntaxToken)name).PascalCase}Id";
 
             Properties.Add(new PropertyModel(this, AccessModifier.Public, new TypeModel(IdPropertyType), IdPropertyName, PropertyAccessorModel.GetPrivateSet, key: true));
 

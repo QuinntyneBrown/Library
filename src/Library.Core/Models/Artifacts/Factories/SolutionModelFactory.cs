@@ -49,7 +49,7 @@ public class SolutionModelFactory: ISolutionModelFactory
         model.DependOns.Add(new DependsOnModel(unitTests.Name, implementation.Name));
 
         var tokens = new TokensBuilder()
-            .With("name", (Token)solutionReferenceModel.Name)
+            .With("name", (SyntaxToken)solutionReferenceModel.Name)
             .Build();
 
         model.Files.Add(FileModelFactory.CreateTemplate(Constants.Templates.ReadMe, "README", model.Directory, "md", tokens));
@@ -96,7 +96,7 @@ public class SolutionModelFactory: ISolutionModelFactory
         model.DependOns.Add(new DependsOnModel(testing.Name, api.Name));
 
         var tokens = new TokensBuilder()
-            .With("name", (Token)solutionReferenceModel.Name)
+            .With("name", (SyntaxToken)solutionReferenceModel.Name)
             .Build();
 
         model.Files.Add(FileModelFactory.CreateTemplate(Constants.Templates.ReadMe, "README", model.Directory, "md", tokens));

@@ -1,3 +1,5 @@
+using Library.Core.Models.Syntax;
+
 namespace Library.Core;
 
 public class TokensBuilder
@@ -8,9 +10,9 @@ public class TokensBuilder
     {
         _value = new();
     }
-    public TokensBuilder With(string propertyName, Token token)
+    public TokensBuilder With(string propertyName, SyntaxToken token)
     {
-        var tokens = token == null ? new Token("").ToTokens(propertyName) : token.ToTokens(propertyName);
+        var tokens = token == null ? new SyntaxToken("").ToTokens(propertyName) : token.ToTokens(propertyName);
         _value = new Dictionary<string, object>(_value.Concat(tokens));
         return this;
     }

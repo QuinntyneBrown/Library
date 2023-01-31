@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Internal\" />
     <Folder Include="Models\Artifacts\Commands\" />
     <Folder Include="Models\Syntax\Commands\" />
   </ItemGroup>
