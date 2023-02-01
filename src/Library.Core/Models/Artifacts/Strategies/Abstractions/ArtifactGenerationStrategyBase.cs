@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+// Copyright (c) Quinntyne Brown. All Rights Reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Library.Core.Models.Artifacts.Strategies.Abstractions;
 
@@ -27,3 +30,4 @@ public abstract class ArtifactGenerationStrategyBase<T> : IArtifactGenerationStr
     public abstract void Create(IArtifactGenerationStrategyFactory artifactGenerationStrategyFactory, T model, dynamic? context = null);
     public virtual int Priority => 0;
 }
+

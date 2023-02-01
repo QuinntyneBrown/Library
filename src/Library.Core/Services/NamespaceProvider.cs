@@ -1,3 +1,6 @@
+// Copyright (c) Quinntyne Brown. All Rights Reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
+
 namespace Library.Core;
 
 public class NamespaceProvider: INamespaceProvider
@@ -22,3 +25,4 @@ public class NamespaceProvider: INamespaceProvider
         return Get(directory, ++depth);
     }
 }
+

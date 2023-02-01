@@ -1,4 +1,7 @@
-﻿using static System.IO.Path;
+// Copyright (c) Quinntyne Brown. All Rights Reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
+
+using static System.IO.Path;
 
 namespace Library.Core.Models.Artifacts;
 
@@ -34,3 +37,4 @@ public class ProjectModel
         _ => "classlib"
     };
 }
+

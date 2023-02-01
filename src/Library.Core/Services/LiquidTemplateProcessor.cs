@@ -1,3 +1,6 @@
+// Copyright (c) Quinntyne Brown. All Rights Reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
+
 using DotLiquid;
 using Microsoft.Extensions.Logging;
 using System.Collections.Immutable;
@@ -69,3 +72,4 @@ public class LiquidTemplateProcessor : ITemplateProcessor
         }
     }
 }
+

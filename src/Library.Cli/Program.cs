@@ -1,3 +1,6 @@
+// Copyright (c) Quinntyne Brown. All Rights Reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
+
 using CommandLine;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,3 +51,4 @@ static void ProcessArgs(IMediator mediator, string[] args)
         .WithParsed(
           (dynamic request) => mediator.Send(request));
 }
+
